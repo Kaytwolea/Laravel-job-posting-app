@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Models\listings;
 use Illuminate\Support\Facades\Route;
 
@@ -14,18 +15,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('listings', [
-        'listings' => listings::all()
-    ]);
-});
+Route::get('/', [AdminController::class, 'getJobs']);
 
-Route::get('/listings/{id}', function($id){
+
+Route::get('/listings/{id}', function ($id) {
     $listing = listings::find($id);
 
-    if($listing) {
+    if ($listing) {
         return view('listing', [
-            'listing' => $listing
+            'listing' => $listing,
         ]);
     } else {
         abort(404);
