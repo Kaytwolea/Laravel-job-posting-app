@@ -8,16 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
-class listings extends Model
+class JobExperience extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $guarded = ['id'];
-    protected $casts = [
-        'tags' => 'array',
-        'skills' => 'array'
-    ];
+
+    public $guarded = ['id'];
 
     public static function boot()
     {
@@ -29,6 +26,6 @@ class listings extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        $this->belongsTo(User::class);
     }
 }

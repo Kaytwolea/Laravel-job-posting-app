@@ -8,16 +8,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
-class listings extends Model
+class education extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $guarded = ['id'];
-    protected $casts = [
-        'tags' => 'array',
-        'skills' => 'array'
-    ];
+    public $guarded = ['id'];
+
+//    protected $casts = [
+//        'start_date' => 'integer',
+//        'end_date' => 'integer',
+//    ];
 
     public static function boot()
     {
@@ -29,6 +30,6 @@ class listings extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        $this->belongsTo(User::class);
     }
 }

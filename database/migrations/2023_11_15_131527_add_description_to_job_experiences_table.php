@@ -12,9 +12,9 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('listings', function (Blueprint $table) {
-            $table->string('job_mode');
-            $table->softDeletes();
+        Schema::table('job_experiences', function (Blueprint $table) {
+            $table->longText('job_description')->nullable();
+            $table->enum('end_date_type', ['present', 'specific_date'])->default('specific_date');
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::table('listings', function (Blueprint $table) {
-            $table->dropColumn('job_mode');
+        Schema::table('job_experiences', function (Blueprint $table) {
+            $table->dropColumn(['job_description', 'end_date_type']);
         });
     }
 };

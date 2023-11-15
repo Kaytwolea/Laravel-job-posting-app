@@ -12,8 +12,14 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('listings', function (Blueprint $table) {
-            $table->string('job_mode');
+        Schema::create('job_experiences', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignId('user_id');
+            $table->string('job_title');
+            $table->string('company');
+            $table->date('start_date');
+            $table->date('end_date')->nullable();
+            $table->timestamps();
             $table->softDeletes();
         });
     }
@@ -25,8 +31,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::table('listings', function (Blueprint $table) {
-            $table->dropColumn('job_mode');
-        });
+        Schema::dropIfExists('job_experiences');
     }
 };

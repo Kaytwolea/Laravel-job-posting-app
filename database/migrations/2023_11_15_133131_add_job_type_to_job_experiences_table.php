@@ -12,9 +12,9 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('listings', function (Blueprint $table) {
-            $table->string('job_mode');
-            $table->softDeletes();
+        Schema::table('job_experiences', function (Blueprint $table) {
+            $table->string('job_type')->nullable();
+            $table->string('job_mode')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::table('listings', function (Blueprint $table) {
-            $table->dropColumn('job_mode');
+        Schema::table('jobexperience', function (Blueprint $table) {
+            $table->dropColumn(['job_mode', 'job_type']);
         });
     }
 };

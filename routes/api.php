@@ -21,15 +21,20 @@ Route::prefix('v1')->group(function () {
     Route::controller(UserController::class)->prefix('user')->group(function () {
         Route::post('login', 'login');
         Route::post('create', 'createUser');
-        Route::post('confirm', 'confirmEmail')->middleware('auth:sanctum');
-        Route::post('verify', 'verifyCode')->middleware('auth:sanctum');
         Route::post('logout', 'logout');
-        Route::get('getuser', 'getUser');
-        Route::get('getuserjobs', 'getUserListing');
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::get('getuser', 'getUser');
+            Route::get('getuserjobs', 'getUserListing');
+            Route::post('updateprofile', 'updateProfile');
+            Route::post('confirm', 'confirmEmail');
+            Route::post('verify', 'verifyCode');
+            Route::post('add-education', 'updateEducation');
+            Route::post('add-experience', 'updateExperience');
+        });
     });
     Route::controller(ListingController::class)->prefix('jobs')->group(function () {
-        Route::get('getjobs', 'getjobs');
-        Route::get('getonejob/{id}', 'getonejob');
+        Route::get('getjobs', 'getJobs')->middleware('auth:sanctum');
+        Route::get('getsinglejob/{id}', 'getJobById');
         Route::post('create', 'postJob')->middleware('auth:sanctum', 'role:employer');
     });
 });

@@ -12,20 +12,19 @@ use Illuminate\Support\Facades\Validator;
 class ListingController extends BaseController
 {
     //Show all Listings
-    public function getjobs()
+    public function getJobs()
     {
-        $jobs = listings::orderBy('id', 'asc')->get();
-
-        return response()->json([
-            'message' => 'Listing returned successfully',
-            'data' => $jobs,
-        ], 200);
+        $jobs = listings::where('accepted', '1')->orderBy('id', 'asc')->get();
+        return $this->sendResponse('Jobs returned successfully', $jobs, 200);
     }
 
     //Show a Listing
-    public function getonejob($id)
+    public function getJobById($id)
     {
-        return $single = listings::find($id);
+        $job = listings::find($id);
+        if ($job == null) return $this->sendResponse('Job not found', null, 400);
+        $job->increment('views');
+        return $this->sendResponse('Job returned successfully', $job, 200);
     }
 
     //Create a Listing

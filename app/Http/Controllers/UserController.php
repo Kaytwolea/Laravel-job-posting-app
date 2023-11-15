@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Mail\Confirmation;
 use App\Mail\Reset;
+use App\Models\education;
+use App\Models\JobExperience;
 use App\Models\User;
 use App\Notifications\ConfirmNotification;
 use App\Notifications\NewUserNotification;
@@ -108,8 +110,9 @@ class UserController extends BaseController
             if ($user->markEmailAsVerified()) {
                 $user->assignRole('employer');
                 event(new Verified($user));
-
+                sendSms($user->phone_number, 'Email verified');
             }
+
             return $this->sendResponse('Email verified successfully', null, 200);
         } else {
             return $this->sendResponse('Incorrect code', null, 400);
@@ -190,31 +193,91 @@ class UserController extends BaseController
     //Get user with token on main page
     public function getUser(Request $request)
     {
-        $authUser = auth()->user();
+        $authUser = auth()->user()->load('experience', 'education');
 
-        return response()->json([
-            'message' => 'User Returned Successfully',
-            'data' => $authUser,
-        ]);
+        return $this->sendResponse('User returned successfully', $authUser, 200);
     }
 
     public function getUserListing()
     {
         $user = User::whereId(auth()->id())->first();
         $userPost = $user->thejob;
+        if ($userPost === null) return $this->sendResponse('User has no jobs', null, 400);
+        return $this->sendResponse('User jobs returned successfully', $userPost, 200);
+    }
 
-        return response()->json([
-            'message' => 'Posts returned successfully',
-            'data' => $userPost,
-            'error' => false,
-        ], 200);
+    public function updateEducation(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'degree' => 'required|string|max:255|in:B.tech,B.Sc,M.Sc,SSCE,Ond,Hnd,Phd',
+            'school' => 'required|string|max:255',
+            'course' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date_type' => 'required|in:present,specific_date',
+            'end_date' => $request->end_date_type === 'specific_date' ? 'required_if:end_date_type,specific_date|date' : '',
+        ]);
+
+
+        if ($validator->fails()) return $this->sendResponse(implode(',', $validator->errors()->all()), null, 400);
+        $user = auth()->user();
+        try {
+            education::create([
+                'user_id' => $user->id,
+                'degree' => $request->degree,
+                'school' => $request->school,
+                'course' => $request->course,
+                'start_date' => $request->start_date,
+                'end_date_type' => $request->end_date_type,
+                'end_date' => $request->end_date
+            ]);
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
+
+        return $this->sendResponse('Education added successfully', null, 201);
+    }
+
+    public function updateExperience(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'job_title' => 'required|string',
+            'company' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date_type' => 'required|in:present,specific_date',
+            'end_date' => $request->end_date_type === 'specific_date' ? 'required_if:end_date_type,specific_date|date' : '',
+            'job_description' => 'required|string',
+            'job_type' => 'required|string|in:remote,hybrid,onsite',
+            'job_mode' => 'required|string|in:internship,contract,full-time'
+        ]);
+
+        if ($validator->fails()) return $this->sendResponse(implode(',', $validator->errors()->all()), null, 400);
+        $user = auth()->user();
+        try {
+            JobExperience::create([
+                'user_id' => $user->id,
+                'job_title' => $request->job_title,
+                'company' => $request->company,
+                'job_description' => $request->job_description,
+                'start_date' => $request->start_date,
+                'end_date_type' => $request->end_date_type,
+                'end_date' => $request->end_date,
+                'job_type' => $request->job_type,
+                'job_mode' => $request->job_mode,
+
+            ]);
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
+
+        return $this->sendResponse('Experience added successfully', null, 201);
+
     }
 
     public function ResetPassword(Request $request)
     {
         try {
             $input = $request->validate([
-                'email' => 'required',
+                'email' => 'required|email',
             ]);
         } catch (Exception) {
             return response()->json([
@@ -290,28 +353,30 @@ class UserController extends BaseController
     public function updateProfile(Request $request)
     {
         $data = $request->all();
+        $user = auth()->user();
+
         if ($request->has('email')) {
-            return response()->json([
-                'message' => 'Email cannot be changed',
-                'error' => true,
-            ], 401);
+            return $this->sendError('Email cannot be modified');
+        }
+        if ($request->has('phone_number')) {
+            return $this->sendError('Phone number cannot be modified');
         }
         if ($request->hasFile('image')) {
             $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath())->getSecurePath();
             $data['image'] = $uploadedFileUrl;
         }
 
-        $user = User::where('id', auth()->id())->update($data);
+        if ($request->hasFile('cv')) {
+            $uploadedFileUrl = Cloudinary::uploadFile($request->file('cv')->getRealPath())->getSecurePath();
+            $data['cv'] = $uploadedFileUrl;
+        }
+        $user->update($data);
 
-        return response()->json([
-            'message' => 'Profile updated successfully',
-            'data' => $user,
-            'error' => false,
-        ], 200);
+        return $this->sendResponse('Updated successfully', null, 200);
     }
 
     public function notAuth()
     {
-        $this->sendResponse('User not authenticated', null, 400);
+        $this->sendResponse('User not authenticated', null, 401);
     }
 }
