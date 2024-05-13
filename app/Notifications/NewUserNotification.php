@@ -5,6 +5,7 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use ManeOlawale\Laravel\Termii\Messages\Message;
 
 class NewUserNotification extends Notification
 {
@@ -22,13 +23,13 @@ class NewUserNotification extends Notification
     public function __construct($user, $confirmation_code)
     {
         $this->user = $user;
-        $this->confirmation_code = $confirmation_code;
+//        $this->confirmation_code = $confirmation_code;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -39,16 +40,16 @@ class NewUserNotification extends Notification
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @param mixed $notifiable
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {
         return (new MailMessage)
             ->subject('Welcome to Jobspace')
             ->view('email', [
-                'name' => 'Dear '.$this->user->first_name,
-                'confirmation_code' => $this->confirmation_code,
+                'name' => 'Dear ' . $this->user->first_name,
+//                'confirmation_code' => $this->confirmation_code,
                 'content' => "...",
             ]);
     }
@@ -56,9 +57,17 @@ class NewUserNotification extends Notification
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
      * @return array
      */
+
+    public function toTermii($notifiable)
+    {
+        return (new Message())
+            ->line('The introduction to the notification.')
+            ->line('Thank you for using our application!');
+    }
+
     public function toArray($notifiable)
     {
         return [

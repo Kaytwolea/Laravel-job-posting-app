@@ -46,11 +46,16 @@ class ConfirmNotification extends Notification
     {
         return (new MailMessage)
             ->subject('Welcome to Jobspace')
-            ->view('email', [
+            ->view('confirm', [
                 'name' => 'Dear ' . $this->user->first_name,
                 'confirmation_code' => $this->confirmation_code,
                 'content' => "...",
             ]);
+    }
+
+    public function toSms($notifiable)
+    {
+
     }
 
     /**
@@ -65,10 +70,9 @@ class ConfirmNotification extends Notification
             //
         ];
     }
-
-    // public function toMySms($notifiable){
-    //     $termii = new Termii();
-
-    //     $termii->sendMessage($this->user->phone_number,"Hello, {$this->user->first_name}, Your Verification Code is {$this->otp}");
-    // }
+//
+//    public function toMySms($notifiable)
+//    {
+//        sendSms($this->user->phone_number, 'Your confirmation code is ' . $this->confirmation_code . 'It will expire soon');
+//    }
 }

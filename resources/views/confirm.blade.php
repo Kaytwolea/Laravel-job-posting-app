@@ -200,21 +200,8 @@
                                     style="font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;">
 
                                     <div
-                                        style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;">
-                                        Welcome to Jobspace
-                                    </div>
-
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-
-                                    <div
-                                        style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;">
-                                        Hello {{ $name }}!<br></br>
-                                        Thank you for signing up on Jobspace. We're really happy to have you!
-                                        Click the link below to login to your account:
+                                        style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:32px;font-weight:bold;line-height:1;text-align:center;color:#555;">
+                                        Please confirm your email
                                     </div>
 
                                 </td>
@@ -222,7 +209,42 @@
 
                             <tr>
                                 <td align="center"
-                                    style="font-size:0px;padding:10px 25px;padding-top:30px;padding-bottom:50px;word-break:break-word;">
+                                    style="font-size:0px;padding:10px 25px;padding-bottom:0;word-break:break-word;">
+
+                                    <div
+                                        style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:center;color:#555;">
+                                        Yes, we know.
+                                    </div>
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+
+                                    <div
+                                        style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:center;color:#555;">
+                                        An email to confirm an email. 🤪
+                                    </div>
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td align="center"
+                                    style="font-size:0px;padding:10px 25px;padding-bottom:20px;word-break:break-word;">
+
+                                    <div
+                                        style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:center;color:#555;">
+                                        Please validate your email address in order to get started using Jobspace.
+                                    </div>
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td align="center"
+                                    style="font-size:0px;padding:10px 25px;padding-top:30px;padding-bottom:40px;word-break:break-word;">
 
                                     <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
                                            style="border-collapse:separate;line-height:100%;">
@@ -231,7 +253,7 @@
                                                 style="border:none;border-radius:3px;color:#ffffff;cursor:auto;padding:15px 25px;"
                                                 valign="middle">
                                                 <p style="background:#2F67F6;color:#ffffff;font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:normal;line-height:120%;Margin:0;text-decoration:none;text-transform:none;">
-                                                    Login to Your Account
+                                                    Confirm Your Email with code {{$confirmation_code}}
                                                 </p>
                                             </td>
                                         </tr>
@@ -241,12 +263,48 @@
                             </tr>
 
                             <tr>
-                                <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                                <td align="center"
+                                    style="font-size:0px;padding:10px 25px;padding-bottom:0;word-break:break-word;">
 
                                     <div
-                                        style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;">
-                                        Best regards,<br><br> Csaba Kissi<br>Elerion ltd., CEO and Founder<br>
-                                        <a href="https://www.htmlemailtemplates.net" style="color:#2F67F6">htmlemailtemplates.net</a>
+                                        style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:center;color:#555;">
+                                        Or verify using this link:
+                                    </div>
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td align="center"
+                                    style="font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;">
+
+                                    <div
+                                        style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:center;color:#555;">
+                                        <a href="https://www.htmlemailtemplates.net/free-html-emails-for-startups"
+                                           style="color:#2F67F6">https://www.htmlemailtemplates.net/free-html-emails-for-startups</a>
+                                    </div>
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+
+                                    <div
+                                        style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:26px;font-weight:bold;line-height:1;text-align:center;color:#555;">
+                                        Need Help?
+                                    </div>
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+
+                                    <div
+                                        style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:22px;text-align:center;color:#555;">
+                                        Please send and feedback or bug info<br> to <a href="mailto:info@example.com"
+                                                                                       style="color:#2F67F6">info@example.com</a>
                                     </div>
 
                                 </td>

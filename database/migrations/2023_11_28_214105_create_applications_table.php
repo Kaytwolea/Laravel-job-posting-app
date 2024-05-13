@@ -12,9 +12,14 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('job_experiences', function (Blueprint $table) {
-            $table->string('job_type')->nullable();
-            $table->string('job_mode')->nullable();
+        Schema::create('applications', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id');
+            $table->foreignId('listings_id');
+            $table->string('cover_letter');
+            $table->string('status')->default('pending');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,8 +30,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::table('job_experiences', function (Blueprint $table) {
-            $table->dropColumn(['job_mode', 'job_type']);
-        });
+        Schema::dropIfExists('applications');
     }
 };

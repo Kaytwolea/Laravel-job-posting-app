@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -32,10 +33,16 @@ Route::prefix('v1')->group(function () {
             Route::post('add-experience', 'updateExperience');
         });
     });
-    Route::controller(ListingController::class)->prefix('jobs')->group(function () {
-        Route::get('getjobs', 'getJobs')->middleware('auth:sanctum');
+    Route::controller(ListingController::class)->prefix('jobs')->middleware('auth:sanctum')->group(function () {
+        Route::get('getjobs', 'getJobs');
         Route::get('getsinglejob/{id}', 'getJobById');
-        Route::post('create', 'postJob')->middleware('auth:sanctum', 'role:employer');
+        Route::post('create', 'postJob');
+        Route::post('filterbytype', 'filterByJobType');
+        Route::post('/filterbymode', 'filterByJobMode');
+    });
+    Route::controller(ApplicationController::class)->prefix('application')->middleware('auth:sanctum')->group(function () {
+        Route::get('/apply/{job_id}', 'createApplication');
+        Route::get('/fetchjobapplicants/{job_id}', 'fetchJobApplications');
     });
 });
 Route::get('getjobs', [ListingController::class, 'getjobs']);

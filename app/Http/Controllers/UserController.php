@@ -31,13 +31,13 @@ class UserController extends BaseController
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'user_name' => 'required|string',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'phone_number' => ['required', 'unique:users,phone_number', new Phone],
             'password' => 'required|string',
 
         ]);
         if ($validate->fails()) {
-            return $this->sendResponse($validate->errors()->all(), null, 422);
+            return $this->sendResponse($validate->errors()->all(), null, 400);
         }
         if ($request->hasFile('image')) {
             $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath())->getSecurePath();
@@ -56,33 +56,33 @@ class UserController extends BaseController
                 'password' => $password,
                 'confirmation_code' => $code,
             ]);
-            $token = $user->createToken('access-token')->plainTextToken;
-
         } catch (Exception $e) {
             return $this->sendResponse($e->getMessage(), null, 400);
         }
         Notification::send($user, new NewUserNotification($user, $user->confirmation_code));
-        return $this->sendResponse('User created successfully', $token, 201);
+//        Termii::send($user->phone_number, 'WElcome Aboard');
+        return $this->sendResponse('Account created successfully, proceed to login', null, 201);
     }
 
     public function confirmEmail(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'email' => 'required|string|email',
+                'email' => 'required|exists:user.email',
             ]);
 
-            if ($validator->fails()) {
-                return $this->sendResponse($validator->errors()->all(), null, 422);
-            }
 
             $user = auth()->user();
+            if ($user->email !== $request->email) return $this->sendResponse('Please enter a correct email address', null, 400);
+//            return $this->sendResponse('kkk', $user, 200);
 
             if (!$user) {
                 return $this->sendResponse('User not found', null, 404);
             }
 
-            $user->email = $request->email;
+            if ($user->hasVerifiedEmail()) {
+                return $this->sendResponse('Email already verified', null, 403);
+            }
             $user->confirmation_code = rand(10000, 99999);
             $user->save();
 
@@ -90,7 +90,7 @@ class UserController extends BaseController
 
             return $this->sendResponse('Confirmation code sent successfully', null, 200);
         } catch (Exception $e) {
-            return $this->sendResponse($e->getMessage(), null, 500);
+            return $this->sendResponse($e->getMessage(), $user, 500);
         }
     }
 
@@ -110,7 +110,12 @@ class UserController extends BaseController
             if ($user->markEmailAsVerified()) {
                 $user->assignRole('employer');
                 event(new Verified($user));
-                sendSms($user->phone_number, 'Email verified');
+                try {
+                    sendSms($user->phone_number, 'Email verified');
+                } catch (Exception $e) {
+                    return $this->sendResponse($e->getMessage(), null, 400);
+                }
+
             }
 
             return $this->sendResponse('Email verified successfully', null, 200);
@@ -122,27 +127,21 @@ class UserController extends BaseController
     //Login
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string',
-            'password' => 'required|string'
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
         ]);
-        $this->sendResponse(implode(', ', $validator->errors()->all()), null, 400);
-        try {
-            $check = Auth::attempt($request->all());
-        } catch (Exception $e) {
+
+        $credentials = request(['email', 'password']);
+        if (!Auth::attempt($credentials)) {
             return response()->json([
-                'message' => $e->getMessage(),
-            ], 400);
+                'message' => 'Email or Password Incorrect',
+                'data' => null
+            ], 401);
         }
-
-        if (!$check) {
-            $this->sendResponse('Incorrect details', null, 400);
-        } else {
-            $User = User::where('email', $request['email'])->first();
-            $token = $User->createToken('access-token')->plainTextToken;
-
-            return $this->sendResponse('Logged in successfully', $token, 200);
-        }
+        $user = $request->user();
+        $token = $user->createToken('access-token')->plainTextToken;
+        return $this->sendResponse('Welcome aboard', $token, 200);
     }
 
     //Resend code
@@ -184,6 +183,7 @@ class UserController extends BaseController
     {
         $user = User::where('id', auth()->id())->first();
         auth()->user()->token()->revoke();
+
 
         return response()->json([
             'message' => 'Logged out successfully',

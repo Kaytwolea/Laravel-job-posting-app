@@ -11,7 +11,7 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "true",
-        "APP_URL": "https://yourproductionurl.com",
+        "APP_URL": "https://laravel-job-posting-app.vercel.app",
 
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
@@ -22,6 +22,16 @@
 
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie"
+        "SESSION_DRIVER": "cookie",
+
+        "MAIL_MAILER": "smtp",
+        "MAIL_HOST": "sandbox.smtp.mailtrap.io",
+        "MAIL_PORT": "2525",
+
+        "MAIL_USERNAME": "907596b66a5723",
+        "MAIL_PASSWORD": "46e9f5b067aec0",
+        "MAIL_ENCRYPTION": "tls",
+        "MAIL_FROM_ADDRESS": "paulkolapo8@gmail.com"
+        "MAIL_FROM_NAME":"Kaytwolea"
     }
 }
